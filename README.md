@@ -20,6 +20,10 @@ which includes the decentralization of its validator set.
 To this extent, the ICF intends to delegate some of its ATOMs in a way that
 encourages a healthy validator set.
 
+Currently, 4 validators control one third of the stake and 10 control two
+thirds. ATOM holders are *strongly encouraged* to diversify their delegations to
+improve the decentralization of the validator set.
+
 ## Delegating to GoS Winners
 
 To begin with, the ICF intends to delegate a fraction of its total ATOMs to Game
