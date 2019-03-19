@@ -53,7 +53,7 @@ The recommended GoS ATOM allocation can be fetched from the [launch
 repo](https://github.com/cosmos/launch):
 
 ```
-curl https://raw.githubusercontent.com/cosmos/launch/master/accounts/icf/gos.json > gos.json
+curl https://raw.githubusercontent.com/cosmos/launch/master/accounts/icf/gos.json > data/gos.json
 ```
 
 The resulting delegations from the ICF, according to the above criteria, can be
@@ -62,7 +62,7 @@ amount of ATOM to be delegated. For instance:
 
 
 ```
-go run main.go 2000000
+go run cmd/delegation/main.go 2000000
 ```
 
 Note you must first run `dep ensure` once to fetch the dependencies, and you
