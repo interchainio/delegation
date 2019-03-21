@@ -6,12 +6,12 @@ its ATOMs.
 ## Background
 
 The Interchain Foundation (ICF) takes a conservative approach to all of its activity.
-As spelled out in a [recent blog
+As outlined in a [recent blog
 post](https://blog.cosmos.network/open-decentralized-networks-87e6097536a3), 
 the success of the network depends
 fundamentally on the actions of the wider community. This means the community of ATOM holders
-is responsible to ensure the network is sufficiently decentralized and that
-community interests are adequetely represented by the validator set.
+is responsible for ensuring the network is sufficiently decentralized and that
+community interests are adequately represented by the validator set.
 
 That said, as a significant stake holder in the Cosmos Network, the ICF is
 interested, like other significant stake holders, in the success of the network,
@@ -29,7 +29,7 @@ improve the decentralization of the validator set.
 To begin with, the ICF intends to delegate a fraction of its total ATOMs to
 certain Game of Stakes winners that are active validators. 
 All validators that received recommended  ATOM allocations from Game of Stakes have submitted identifying
-information to the ICF and have proven their worth in hard won battles during
+information to the ICF and have proven their capabilities in hard won battles during
 the Game of Stakes competition. 
 
 To be eligible for delegation, such validators must:
