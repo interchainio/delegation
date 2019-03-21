@@ -72,6 +72,7 @@ func main() {
 
 	// determine eligible validators
 	var eligibleVals []stakingtypes.Validator
+	var ineligibleVals []stakingtypes.Validator
 
 	var million float64 = 1000000
 	for _, v := range gosVals {
@@ -86,6 +87,8 @@ func main() {
 		eligibleAmt := selfDelegation*2 > gosAmt && staked < million
 		if eligibleAmt {
 			eligibleVals = append(eligibleVals, v)
+		} else {
+			ineligibleVals = append(ineligibleVals, v)
 		}
 	}
 
@@ -95,6 +98,7 @@ func main() {
 	atoms := float64(icfAtoms)
 	var msgs []sdk.Msg
 	fmt.Println("RANK, ADDRESS, NAME, STAKED, SELF-DELEGATION / GOS-WINNINGS, COMMISSION/MAX-COMMISSION, MAX-COMMISSION-CHANGE - TO-DELEGATE")
+	fmt.Println("ELIGIBLE")
 	for i, v := range eligibleVals {
 		addr := sdk.AccAddress(v.OperatorAddress).String()
 		gosAmt := gosMap[addr]
@@ -119,6 +123,22 @@ func main() {
 			ValidatorAddress: v.OperatorAddress,
 			Value:            sdk.NewCoin("uatom", sdk.NewInt(int64(delegate*1000000))),
 		})
+	}
+
+	fmt.Println("INELIGIBLE")
+	for i, v := range ineligibleVals {
+		addr := sdk.AccAddress(v.OperatorAddress).String()
+		gosAmt := gosMap[addr]
+		selfDelegation := pkg.GetSelfDelegation(cdc, node, v.OperatorAddress)
+		staked := pkg.UatomIntToAtomFloat(v.Tokens)
+
+		maxRate := decToFloat(v.Commission.MaxRate)
+		commission, commissionChange := decToFloat(v.Commission.Rate), decToFloat(v.Commission.MaxChangeRate)
+
+		fmt.Printf("%d, %s, %s, %.2f, %d/%d, %.2f/%.2f, %.2f\n",
+			i, addr, v.Description.Moniker,
+			staked, int64(selfDelegation), int64(gosAmt),
+			commission, maxRate, commissionChange)
 	}
 
 	fmt.Println("ATOMs left:", atoms)
