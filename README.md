@@ -71,7 +71,7 @@ computed from the `main.go` file in this repository, by specifying the total
 amount of ATOM to be delegated. For instance:
 
 ```
-go run cmd/delegation/main.go 2000000
+go run cmd/delegation/main.go 200000
 ```
 
 Note you must first run `dep ensure` once to fetch the dependencies, and you
