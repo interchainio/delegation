@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"math"
 	"os"
 	"sort"
@@ -9,7 +10,9 @@ import (
 
 	gaia "github.com/cosmos/cosmos-sdk/cmd/gaia/app"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/staking"
+	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/interchainio/delegation/pkg"
 	tmclient "github.com/tendermint/tendermint/rpc/client"
 )
@@ -22,6 +25,9 @@ var (
 
 	// expects the gos.json file to be here
 	gosJSON = "data/gos.json"
+
+	// output unsigned delegation tx
+	outputFile = "unsigned-delegations.json"
 )
 
 func main() {
@@ -30,6 +36,17 @@ func main() {
 		fmt.Println("Please specify total amount of atoms to delegate")
 		os.Exit(1)
 	}
+
+	// if a second arg is specified, output the delegation tx
+	var delegatorAddr sdk.AccAddress
+	if len(args) == 2 {
+		var err error
+		delegatorAddr, err = sdk.AccAddressFromBech32(args[1])
+		if err != nil {
+			panic(err)
+		}
+	}
+
 	icfAtoms, err := strconv.ParseFloat(args[0], 64)
 	if err != nil {
 		panic(err)
@@ -73,9 +90,11 @@ func main() {
 		}
 	}
 
-	// determien how much to delegate to each validator
+	// determine how much to delegate to each validator
+	// and collect it as a MsgDelegate
 	N := len(eligibleVals)
 	atoms := float64(icfAtoms)
+	var msgs []sdk.Msg
 	for i, v := range eligibleVals {
 		addr := sdk.AccAddress(v.OperatorAddress).String()
 		gosAmt := gosMap[addr]
@@ -87,6 +106,32 @@ func main() {
 		atoms -= delegate
 
 		fmt.Printf("%d, %s, %s, %.2f, %d/%d, %.2f\n", i, addr, v.Description.Moniker, staked, int64(selfDelegation), int64(gosAmt), delegate)
+
+		msgs = append(msgs, stakingtypes.MsgDelegate{
+			DelegatorAddress: delegatorAddr,
+			ValidatorAddress: v.OperatorAddress,
+			Value:            sdk.NewCoin("uatom", sdk.NewInt(int64(delegate*1000000))),
+		})
 	}
 	fmt.Println("ATOMs left:", atoms)
+
+	if len(delegatorAddr) == 0 {
+		return
+	}
+
+	tx := auth.StdTx{
+		Msgs: msgs,
+		Fee: auth.StdFee{
+			Gas: uint64(200000 * len(msgs)),
+		},
+	}
+	bz, err := cdc.MarshalJSONIndent(tx, "", "  ")
+	if err != nil {
+		panic(err)
+	}
+
+	err = ioutil.WriteFile(outputFile, bz, 0600)
+	if err != nil {
+		panic(err)
+	}
 }
