@@ -71,22 +71,21 @@ func main() {
 	})
 
 	// determine eligible validators
-	var eligibleVals []staking.Validator
+	var eligibleVals []stakingtypes.Validator
 
-	i := 0
 	var million float64 = 1000000
-	fmt.Println("RANK, ADDRESS, NAME, STAKED, SELF-DELEGATION / GOS-WINNINGS")
 	for _, v := range gosVals {
 		addr := sdk.AccAddress(v.OperatorAddress).String()
 		gosAmt := gosMap[addr]
 		selfDelegation := pkg.GetSelfDelegation(cdc, node, v.OperatorAddress)
 		staked := pkg.UatomIntToAtomFloat(v.Tokens)
 
-		// eligible if they have less than 1M staked and they self bonded more than half their gos winnings:
-		eligible := selfDelegation*2 > gosAmt && staked < million
-		if eligible {
+		// eligible if they have:
+		// - less than 1M staked
+		// - self bonded more than half their gos winnings
+		eligibleAmt := selfDelegation*2 > gosAmt && staked < million
+		if eligibleAmt {
 			eligibleVals = append(eligibleVals, v)
-			i++
 		}
 	}
 
@@ -95,6 +94,7 @@ func main() {
 	N := len(eligibleVals)
 	atoms := float64(icfAtoms)
 	var msgs []sdk.Msg
+	fmt.Println("RANK, ADDRESS, NAME, STAKED, SELF-DELEGATION / GOS-WINNINGS, COMMISSION/MAX-COMMISSION, MAX-COMMISSION-CHANGE - TO-DELEGATE")
 	for i, v := range eligibleVals {
 		addr := sdk.AccAddress(v.OperatorAddress).String()
 		gosAmt := gosMap[addr]
@@ -105,7 +105,14 @@ func main() {
 		delegate := math.Min(million-staked, propAmt)
 		atoms -= delegate
 
-		fmt.Printf("%d, %s, %s, %.2f, %d/%d, %.2f\n", i, addr, v.Description.Moniker, staked, int64(selfDelegation), int64(gosAmt), delegate)
+		maxRate := decToFloat(v.Commission.MaxRate)
+		commission, commissionChange := decToFloat(v.Commission.Rate), decToFloat(v.Commission.MaxChangeRate)
+
+		fmt.Printf("%d, %s, %s, %.2f, %d/%d, %.2f/%.2f, %.2f - %.2f\n",
+			i, addr, v.Description.Moniker,
+			staked, int64(selfDelegation), int64(gosAmt),
+			commission, maxRate, commissionChange,
+			delegate)
 
 		msgs = append(msgs, stakingtypes.MsgDelegate{
 			DelegatorAddress: delegatorAddr,
@@ -113,12 +120,28 @@ func main() {
 			Value:            sdk.NewCoin("uatom", sdk.NewInt(int64(delegate*1000000))),
 		})
 	}
+
 	fmt.Println("ATOMs left:", atoms)
 
 	if len(delegatorAddr) == 0 {
 		return
 	}
 
+	// split it up
+	N = 7
+	i := 0
+	for len(msgs) > 0 {
+		n := N
+		if len(msgs) < n {
+			n = len(msgs)
+		}
+		writeTx(msgs[:n], fmt.Sprintf("%s-%d", outputFile, i))
+		msgs = msgs[n:]
+		i += 1
+	}
+}
+
+func writeTx(msgs []sdk.Msg, fileName string) {
 	tx := auth.StdTx{
 		Msgs: msgs,
 		Fee: auth.StdFee{
@@ -130,8 +153,13 @@ func main() {
 		panic(err)
 	}
 
-	err = ioutil.WriteFile(outputFile, bz, 0600)
+	err = ioutil.WriteFile(fileName, bz, 0600)
 	if err != nil {
 		panic(err)
 	}
+}
+
+func decToFloat(d sdk.Dec) float64 {
+	d100 := d.Mul(sdk.NewDec(100))
+	return float64(d100.TruncateInt64()) / 100
 }
