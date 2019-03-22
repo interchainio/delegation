@@ -25,6 +25,10 @@ var (
 	// to query a validators self delegation
 	delegationEndPath = "key"
 	delegationPath    = fmt.Sprintf("/store/%s/%s", storeName, delegationEndPath)
+
+	// to query all an accounts delegations
+	delegationsEndPath = "subspace"
+	delegationsPath    = fmt.Sprintf("/store/%s/%s", storeName, delegationsEndPath)
 )
 
 // fetch validators from /abci_query
@@ -47,6 +51,33 @@ func GetValidators(cdc *amino.Codec, node *tmclient.HTTP) staking.Validators {
 		validators = append(validators, types.MustUnmarshalValidator(cdc, kv.Value))
 	}
 	return validators
+}
+
+func GetDelegations(cdc *amino.Codec, node *tmclient.HTTP, addr []byte) staking.Delegations {
+	key := staking.GetDelegationsKey(sdk.AccAddress(addr))
+	opts := tmclient.ABCIQueryOptions{
+		Prove: false,
+	}
+
+	resQuery, err := node.ABCIQueryWithOptions(delegationsPath, key, opts)
+	if err != nil {
+		panic(err)
+	}
+	resRaw := resQuery.Response.Value
+
+	if len(resRaw) == 0 {
+		return nil
+	}
+
+	var resKVs []sdk.KVPair
+	cdc.MustUnmarshalBinaryLengthPrefixed(resRaw, &resKVs)
+
+	var delegations staking.Delegations
+	for _, kv := range resKVs {
+		delegations = append(delegations, types.MustUnmarshalDelegation(cdc, kv.Value))
+	}
+	return delegations
+
 }
 
 // fetch self delegations from /abci_query
