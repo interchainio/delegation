@@ -76,3 +76,18 @@ go run cmd/delegation/main.go 200000
 
 Note you must first run `dep ensure` once to fetch the dependencies, and you
 must have a locally running and synced `gaiad` node.
+
+## GoS winners using non-GoS validator addresses
+
+Some winners of Game of Stakes (GoS) have noted that they created validators using
+addresses from the fundraiser, rather than their Game of Stakes address, and
+were thus neglected by the script available here. Since such validators would
+otherwise fit the outlined criteria, the ICF may consider delegating to them if
+they submit proof of ownership of their GoS and fundraiser addresses by performing the following steps: 
+
+- Open an issue in this repository that includes both the GoS address and the fundraiser address,
+  where the fundraiser address corresponds to a currently active validator.
+- Link to a transaction on the Cosmos Hub sent from the GoS account that includes the
+  fundraiser address in the transaction's memo field.
+- Link to a transaction on the Cosmos Hub from the fundraiser address that includes the
+  GoS address in the transaction's memo field.
