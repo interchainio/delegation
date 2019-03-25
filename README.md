@@ -24,6 +24,9 @@ Currently, 4 validators control one third of the stake and 10 control two
 thirds. ATOM holders are *strongly encouraged* to diversify their delegations to
 improve the decentralization of the validator set.
 
+Also, to achieve decentralization on governance procedures, ICF will stay neutral and 
+not overwrite any governance proposal votes done by the validators whom ICF delegates to.
+
 ## Delegating to GoS Winners
 
 To begin with, the ICF intends to delegate a fraction of its total ATOMs to
@@ -40,6 +43,7 @@ To be eligible for delegation, such validators must:
   its intended delegations
 - have bonded more than 50% of the ATOMs won during Game of Stakes to their
   validator
+- not be composed of any personnel who is/was a member of Cosmos/Tendermint team
 
 The amount delegated will be such that:
 
