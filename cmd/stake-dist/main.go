@@ -55,6 +55,7 @@ func main() {
 			oneThird = i + 1
 		}
 	}
+	fmt.Printf("At block height %d\n", pkg.GetLatestHeight(node))
 	fmt.Printf("%d validators control 2/3 of the stake\n", twoThirds)
 	fmt.Printf("%d validators control 1/3 of the stake\n", oneThird)
 }
