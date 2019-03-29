@@ -72,6 +72,15 @@ func GetSelfDelegation(cdc *amino.Codec, node *tmclient.HTTP, addr []byte) float
 	return UatomIntToAtomFloat(delegation.Shares.TruncateInt())
 }
 
+// fetch latest block height from /status
+func GetLatestHeight(node *tmclient.HTTP) int64 {
+       resQuery, err := node.Status()
+       if err != nil {
+               panic(err)
+       }
+       return resQuery.SyncInfo.LatestBlockHeight
+}
+
 // convert Int uatoms to float64 atoms
 func UatomIntToAtomFloat(i sdk.Int) float64 {
 	return float64(i.Int64()) / float64(1000000)
