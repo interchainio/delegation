@@ -43,7 +43,6 @@ To be eligible for delegation, such validators must:
   its intended delegations
 - have bonded more than 50% of the ATOMs won during Game of Stakes to their
   validator
-- not be composed of any personnel who is/was a member of Cosmos/Tendermint team
 
 The amount delegated will be such that:
 
