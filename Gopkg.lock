@@ -617,8 +617,11 @@
   input-imports = [
     "github.com/cosmos/cosmos-sdk/cmd/gaia/app",
     "github.com/cosmos/cosmos-sdk/types",
+    "github.com/cosmos/cosmos-sdk/x/auth",
     "github.com/cosmos/cosmos-sdk/x/staking",
     "github.com/cosmos/cosmos-sdk/x/staking/types",
+    "github.com/spf13/cobra",
+    "github.com/tendermint/go-amino",
     "github.com/tendermint/tendermint/rpc/client",
   ]
   solver-name = "gps-cdcl"
