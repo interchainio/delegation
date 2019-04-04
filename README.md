@@ -32,7 +32,7 @@ decisions by the ICF.
 ## Disclaimer
 
 The ICF reserves the right to change its delegations at any time. It may withdraw delegations
-from some or all Game of Stakes winners and/or redelegate to specific validators at any point 
+from some or all of the validators it has delegated to and/or redelegate to specific validators at any point 
 in time without any reason. Further, no validator may assert any claims against the ICF to delegate 
 ATOMs to them. The ICF is under no obligation to delegate its ATOMs.
 
