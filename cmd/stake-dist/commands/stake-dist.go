@@ -15,6 +15,7 @@ import (
 var (
 	cdc = gaia.MakeCodec()
 
+	// expects a locally running node, otherwise provide flag
 	fullNodeUrl string
 )
 

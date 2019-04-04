@@ -22,16 +22,16 @@ import (
 var (
 	cdc = gaia.MakeCodec()
 
-	// expects a locally running node
-	// TODO flag it up yo
-	node = tmclient.NewHTTP("https://rpc.cosmos.network:26657", "/websocket")
-
-	// expects the gos.json file to be here
-	gosJSON = "data/gos.json"
-
-	// output unsigned delegation tx
-	outputFile = "unsigned-delegations.json"
+	fullNodeUrl string
+	gosJSON     string
+	outputFile  string
 )
+
+func init() {
+	RootCmd.PersistentFlags().StringVarP(&fullNodeUrl, "url", "", "localhost:26657", "URL of synced full-node to use.")
+	RootCmd.PersistentFlags().StringVarP(&gosJSON, "gos-json", "", "data/gos.json", "source of json file")
+	RootCmd.PersistentFlags().StringVarP(&outputFile, "output", "", "unsigned-delegations.json", "location to output json file")
+}
 
 var RootCmd = &cobra.Command{
 	Use:   "delegation",
@@ -47,6 +47,7 @@ func Execute() {
 }
 
 func getDelegation(cmd *cobra.Command, args []string) {
+	node := tmclient.NewHTTP(fullNodeUrl, "/websocket")
 	if len(args) < 1 {
 		fmt.Println("Please specify total amount of atoms to delegate")
 		os.Exit(1)
