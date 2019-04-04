@@ -15,9 +15,12 @@ import (
 var (
 	cdc = gaia.MakeCodec()
 
-	// expects a locally running node
-	node = tmclient.NewHTTP("localhost:26657", "/websocket")
+	fullNodeUrl string
 )
+
+func init() {
+	RootCmd.PersistentFlags().StringVarP(&fullNodeUrl, "url", "", "localhost:26657", "URL of synced full-node to use.")
+}
 
 var RootCmd = &cobra.Command{
 	Use:   "stake-dist",
@@ -34,6 +37,8 @@ func Execute() {
 }
 
 func getDist(cmd *cobra.Command, args []string) {
+	node := tmclient.NewHTTP(fullNodeUrl, "/websocket")
+
 	var toAdd float64
 	if len(args) == 1 {
 		toAddInt, err := strconv.Atoi(args[0])
