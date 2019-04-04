@@ -1,0 +1,13 @@
+version: 2
+
+jobs:
+  build:
+    docker:
+      - image: circleci/golang:latest
+
+    working_directory: /go/src/github.com
+    steps:
+      - checkout
+      - run: dep ensure
+      - run: go build ./cmd/delegation  
+      - run: go build ./cmd/stake-dist
