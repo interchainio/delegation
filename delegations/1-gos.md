@@ -1,0 +1,59 @@
+# Round 1 - Delegating to GoS Winners
+
+To begin with, the ICF intends to delegate a fraction of its total ATOMs to
+certain Game of Stakes winners that are active validators. 
+All validators that received recommended  ATOM allocations from Game of Stakes have submitted identifying
+information to the ICF and have proven their capabilities in hard won battles during
+the Game of Stakes competition. 
+
+To be eligible for delegation, such validators must:
+
+- have been recommended an ATOM allocation in the genesis file as a result of
+  Game of Stakes
+- have less than 1M ATOMs bonded to their validator at the time the ICF computes
+  its intended delegations
+- have bonded more than 50% of the ATOMs won during Game of Stakes to their
+  validator
+
+The amount delegated will be such that:
+
+- the validator will not have more than 1M bonded to them after the ICF's
+  delegation, at the time the ICF computes its intended delegations
+- the total amount delegated by the ICF here is otherwise split evenly between validators
+
+## GoS winners using non-GoS validator addresses
+
+Some winners of Game of Stakes (GoS) have noted that they created validators using
+addresses from the fundraiser, rather than their Game of Stakes address, and
+were thus neglected by the script available here. Since such validators would
+otherwise fit the outlined criteria, the ICF may consider delegating to them if
+they submit proof of ownership of their GoS and fundraiser addresses by performing the following steps: 
+
+- Open an issue in this repository that includes both the GoS address and the fundraiser address,
+  where the fundraiser address corresponds to a currently active validator.
+- Link to a transaction on the Cosmos Hub sent from the GoS account that includes the
+  fundraiser address in the transaction's memo field.
+- Link to a transaction on the Cosmos Hub from the fundraiser address that includes the
+  GoS address in the transaction's memo field.
+
+
+## Recomputing the Delegation Amounts
+
+The recommended GoS ATOM allocation can be fetched from the [launch
+repo](https://github.com/cosmos/launch):
+
+```
+curl https://raw.githubusercontent.com/cosmos/launch/master/accounts/icf/gos.json > data/gos.json
+```
+
+The resulting delegations from the ICF, according to the above criteria, can be
+computed from the `main.go` file in this repository, by specifying the total
+amount of ATOM to be delegated. For instance:
+
+```
+go run cmd/delegation/main.go 200000
+```
+
+Note you must first run `dep ensure` once to fetch the dependencies, and you
+must have a locally running and synced `gaiad` node.
+
