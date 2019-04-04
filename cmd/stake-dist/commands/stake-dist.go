@@ -16,7 +16,7 @@ var (
 	cdc = gaia.MakeCodec()
 
 	// expects a locally running node
-	node = tmclient.NewHTTP("https://rpc.cosmos.network:26657", "/websocket")
+	node = tmclient.NewHTTP("localhost:26657", "/websocket")
 )
 
 var RootCmd = &cobra.Command{
