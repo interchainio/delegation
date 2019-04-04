@@ -2,7 +2,6 @@ package commands
 
 import (
 	"fmt"
-	"os"
 	"sort"
 	"strconv"
 
@@ -17,7 +16,7 @@ var (
 	cdc = gaia.MakeCodec()
 
 	// expects a locally running node
-	node = tmclient.NewHTTP("localhost:26657", "/websocket")
+	node = tmclient.NewHTTP("https://rpc.cosmos.network:26657", "/websocket")
 )
 
 var RootCmd = &cobra.Command{
@@ -25,9 +24,7 @@ var RootCmd = &cobra.Command{
 	Short: "Display stake distribution at latest block height",
 	Long: `Display how many validators control 1/3 and 2/3 of
 	the total stake, at the latest block height.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("woot woot working")
-	},
+	Run: getDist,
 }
 
 func Execute() {
@@ -36,8 +33,7 @@ func Execute() {
 	}
 }
 
-func main() {
-	args := os.Args[1:]
+func getDist(cmd *cobra.Command, args []string) {
 	var toAdd float64
 	if len(args) == 1 {
 		toAddInt, err := strconv.Atoi(args[0])
