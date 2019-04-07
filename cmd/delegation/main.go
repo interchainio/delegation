@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"math"
 	"os"
 	"sort"
@@ -10,7 +9,6 @@ import (
 
 	gaia "github.com/cosmos/cosmos-sdk/cmd/gaia/app"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/interchainio/delegation/pkg"
@@ -28,6 +26,9 @@ var (
 
 	// output unsigned delegation tx
 	outputFile = "unsigned-delegations.json"
+
+	// gas per msg included in the tx
+	gasPerMsg = 200000
 )
 
 func main() {
@@ -52,45 +53,12 @@ func main() {
 		panic(err)
 	}
 
-	// get list of validators and list of gos winners,
-	// cross reference them, and sort by voting power
+	// get list of validators and gos winners,
 	validators := pkg.GetValidators(cdc, node)
 	gosMap := pkg.ListToMap(gosJSON)
 
-	var gosVals []staking.Validator
-	for _, v := range validators {
-		vs := sdk.AccAddress(v.OperatorAddress).String()
-		_, ok := gosMap[vs]
-		if ok {
-			gosVals = append(gosVals, v)
-		}
-	}
-
-	sort.Slice(gosVals, func(i, j int) bool {
-		return gosVals[i].Tokens.GT(gosVals[j].Tokens)
-	})
-
-	// determine eligible validators
-	var eligibleVals []stakingtypes.Validator
-	var ineligibleVals []stakingtypes.Validator
-
-	var million float64 = 1000000
-	for _, v := range gosVals {
-		addr := sdk.AccAddress(v.OperatorAddress).String()
-		gosAmt := gosMap[addr]
-		selfDelegation := pkg.GetSelfDelegation(cdc, node, v.OperatorAddress)
-		staked := pkg.UatomIntToAtomFloat(v.Tokens)
-
-		// eligible if they have:
-		// - less than 1M staked
-		// - self bonded more than half their gos winnings
-		eligibleAmt := selfDelegation*2 > gosAmt && staked < million
-		if eligibleAmt {
-			eligibleVals = append(eligibleVals, v)
-		} else {
-			ineligibleVals = append(ineligibleVals, v)
-		}
-	}
+	var maxStaked float64 = 1000000
+	eligibleVals, ineligibleVals = getGoSEligibleVals(maxStaked, gosMap, validators)
 
 	// determine how much to delegate to each validator
 	// and collect it as a MsgDelegate
@@ -106,11 +74,11 @@ func main() {
 		staked := pkg.UatomIntToAtomFloat(v.Tokens)
 
 		propAmt := float64(atoms) / float64(N-i)
-		delegate := math.Min(million-staked, propAmt)
+		delegate := math.Min(maxStaked-staked, propAmt)
 		atoms -= delegate
 
-		maxRate := decToFloat(v.Commission.MaxRate)
-		commission, commissionChange := decToFloat(v.Commission.Rate), decToFloat(v.Commission.MaxChangeRate)
+		maxRate := pkg.DecToFloat(v.Commission.MaxRate)
+		commission, commissionChange := pkg.DecToFloat(v.Commission.Rate), pkg.DecToFloat(v.Commission.MaxChangeRate)
 
 		fmt.Printf("%d, %s, %s, %.2f, %d/%d, %.2f/%.2f, %.2f - %.2f\n",
 			i, addr, v.Description.Moniker,
@@ -132,8 +100,8 @@ func main() {
 		selfDelegation := pkg.GetSelfDelegation(cdc, node, v.OperatorAddress)
 		staked := pkg.UatomIntToAtomFloat(v.Tokens)
 
-		maxRate := decToFloat(v.Commission.MaxRate)
-		commission, commissionChange := decToFloat(v.Commission.Rate), decToFloat(v.Commission.MaxChangeRate)
+		maxRate := pkg.DecToFloat(v.Commission.MaxRate)
+		commission, commissionChange := pkg.DecToFloat(v.Commission.Rate), pkg.DecToFloat(v.Commission.MaxChangeRate)
 
 		fmt.Printf("%d, %s, %s, %.2f, %d/%d, %.2f/%.2f, %.2f\n",
 			i, addr, v.Description.Moniker,
@@ -155,31 +123,45 @@ func main() {
 		if len(msgs) < n {
 			n = len(msgs)
 		}
-		writeTx(msgs[:n], fmt.Sprintf("%s-%d", outputFile, i))
+		pkg.WriteTx(msgs[:n], gasPerMsg, fmt.Sprintf("%s-%d", outputFile, i))
 		msgs = msgs[n:]
 		i += 1
 	}
 }
 
-func writeTx(msgs []sdk.Msg, fileName string) {
-	tx := auth.StdTx{
-		Msgs: msgs,
-		Fee: auth.StdFee{
-			Gas: uint64(200000 * len(msgs)),
-		},
-	}
-	bz, err := cdc.MarshalJSONIndent(tx, "", "  ")
-	if err != nil {
-		panic(err)
+func getGoSEligibleVals(maxStaked float64, gosMap map[string]float64, validators []stakingtypes.Validator) ([]stakingtypes.Validator, []stakingtypes.Validator) {
+	var gosVals []staking.Validator
+	for _, v := range validators {
+		vs := sdk.AccAddress(v.OperatorAddress).String()
+		_, ok := gosMap[vs]
+		if ok {
+			gosVals = append(gosVals, v)
+		}
 	}
 
-	err = ioutil.WriteFile(fileName, bz, 0600)
-	if err != nil {
-		panic(err)
-	}
-}
+	sort.Slice(gosVals, func(i, j int) bool {
+		return gosVals[i].Tokens.GT(gosVals[j].Tokens)
+	})
 
-func decToFloat(d sdk.Dec) float64 {
-	d100 := d.Mul(sdk.NewDec(100))
-	return float64(d100.TruncateInt64()) / 100
+	// determine eligible validators
+	var eligibleVals []stakingtypes.Validator
+	var ineligibleVals []stakingtypes.Validator
+
+	for _, v := range gosVals {
+		addr := sdk.AccAddress(v.OperatorAddress).String()
+		gosAmt := gosMap[addr]
+		selfDelegation := pkg.GetSelfDelegation(cdc, node, v.OperatorAddress)
+		staked := pkg.UatomIntToAtomFloat(v.Tokens)
+
+		// eligible if they have:
+		// - less than 1M staked
+		// - self bonded more than half their gos winnings
+		eligibleAmt := selfDelegation*2 > gosAmt && staked < maxStaked
+		if eligibleAmt {
+			eligibleVals = append(eligibleVals, v)
+		} else {
+			ineligibleVals = append(ineligibleVals, v)
+		}
+	}
+	return eligibleVals, ineligibleVals
 }
