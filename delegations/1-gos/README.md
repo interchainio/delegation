@@ -36,6 +36,14 @@ they submit proof of ownership of their GoS and fundraiser addresses by performi
 - Link to a transaction on the Cosmos Hub from the fundraiser address that includes the
   GoS address in the transaction's memo field.
 
+The following instances of this came forward:
+
+| Name | GoS Address | Validator Address | Issue
+--------------------------------------------------
+| 01no.de | cosmos1wf3sncgk7s2ykamrhy4etf09y94rrrg43cdad7 | cosmosvaloper17mggn4znyeyg25wd7498qxl7r2jhgue8u4qjcq | #10
+| stake.zone | cosmos199843dmw5r4nkt6ld00y0wdm0rnnwump4lgs30 | cosmosvaloper1rfpar0qx3umnhu0f6wjp4hvnr3x6u5389e094j | #11
+| coinone | cosmos1pz6yu5vdxfzw85cn6d7rp52me4lu8khx7lpkzd | cosmosvaloper1te8nxpc2myjfrhaty0dnzdhs5ahdh5agzuym9v | #13
+
 
 ## Recomputing the Delegation Amounts
 
@@ -56,4 +64,15 @@ go run cmd/delegation/main.go 200000
 
 Note you must first run `dep ensure` once to fetch the dependencies, and you
 must have a locally running and synced `gaiad` node.
+
+
+## Disclaimer
+
+The ICF reserves the right to change its delegations at any time. It may withdraw delegations
+from some or all Game of Stakes winners and/or redelegate to specific validators at any point 
+in time without any reason. Further, no validator may assert any claims against the ICF to delegate 
+ATOMs to them. The ICF is under no obligation to delegate its ATOMs.
+
+This document is for information purposes only with regards to the ICF's
+intention and is not binding in any way. 
 

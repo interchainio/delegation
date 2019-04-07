@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	"github.com/cosmos/cosmos-sdk/x/staking/types"
 	amino "github.com/tendermint/go-amino"
@@ -74,11 +75,16 @@ func GetSelfDelegation(cdc *amino.Codec, node *tmclient.HTTP, addr []byte) float
 
 // fetch latest block height from /status
 func GetLatestHeight(node *tmclient.HTTP) int64 {
-       resQuery, err := node.Status()
-       if err != nil {
-               panic(err)
-       }
-       return resQuery.SyncInfo.LatestBlockHeight
+	resQuery, err := node.Status()
+	if err != nil {
+		panic(err)
+	}
+	return resQuery.SyncInfo.LatestBlockHeight
+}
+
+func DecToFloat(d sdk.Dec) float64 {
+	d100 := d.Mul(sdk.NewDec(100))
+	return float64(d100.TruncateInt64()) / 100
 }
 
 // convert Int uatoms to float64 atoms
@@ -118,4 +124,22 @@ func ListToMap(file string) map[string]float64 {
 		amounts[addr] += amt
 	}
 	return amounts
+}
+
+func WriteTx(msgs []sdk.Msg, gasPerMsg int, fileName string) {
+	tx := auth.StdTx{
+		Msgs: msgs,
+		Fee: auth.StdFee{
+			Gas: uint64(gasPerMsg * len(msgs)),
+		},
+	}
+	bz, err := cdc.MarshalJSONIndent(tx, "", "  ")
+	if err != nil {
+		panic(err)
+	}
+
+	err = ioutil.WriteFile(fileName, bz, 0600)
+	if err != nil {
+		panic(err)
+	}
 }
