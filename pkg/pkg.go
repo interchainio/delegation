@@ -157,7 +157,7 @@ func ListToMap(file string) map[string]float64 {
 	return amounts
 }
 
-func WriteTx(msgs []sdk.Msg, gasPerMsg int, fileName string) {
+func WriteTx(cdc *amino.Codec, msgs []sdk.Msg, gasPerMsg int, fileName string) {
 	tx := auth.StdTx{
 		Msgs: msgs,
 		Fee: auth.StdFee{

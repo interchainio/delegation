@@ -58,7 +58,7 @@ func main() {
 	gosMap := pkg.ListToMap(gosJSON)
 
 	var maxStaked float64 = 1000000
-	eligibleVals, ineligibleVals = getGoSEligibleVals(maxStaked, gosMap, validators)
+	eligibleVals, ineligibleVals := getGoSEligibleVals(maxStaked, gosMap, validators)
 
 	// determine how much to delegate to each validator
 	// and collect it as a MsgDelegate
@@ -123,7 +123,7 @@ func main() {
 		if len(msgs) < n {
 			n = len(msgs)
 		}
-		pkg.WriteTx(msgs[:n], gasPerMsg, fmt.Sprintf("%s-%d", outputFile, i))
+		pkg.WriteTx(cdc, msgs[:n], gasPerMsg, fmt.Sprintf("%s-%d", outputFile, i))
 		msgs = msgs[n:]
 		i += 1
 	}
