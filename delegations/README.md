@@ -3,7 +3,8 @@
 Particular delegation actions are documented here.
 
 - [Round 1](1-gos) - Delegating to GoS winners
-
+- [Round 2](2-match-small) - Delegating to validators with under 250k bonded
+  ATOMs
 
 
 ## Disclaimer
