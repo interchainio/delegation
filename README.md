@@ -26,6 +26,8 @@ thirds (see the `cmd/stake-dist` tool).
 ATOM holders are *strongly encouraged* to diversify their delegations to
 improve the decentralization of the validator set.
 
+## Delegations
+
 See the [delegations directory](delegations) for documentation on particular delegation
 decisions by the ICF.
 
