@@ -18,7 +18,7 @@ If Validator 2 has 230,000 ATOMs, the ICF delegated 20,000 ATOMs to bring this V
 The purpose of this allocation was to help support the validators with the lowest stake and proportionally
 recognize them for actively participating and attracting delegation.
 
-The ICF may continue to delegate some of its ATOMs in the future in a way that encourages a healthy validator set
+The ICF may continue to delegate some of its ATOMs in the future in a way that encourages a healthy validator set.
 
 We thank all validators for their participation in securing and contributing to the Cosmos Network and  continue to welcome feedback from the community.
 
