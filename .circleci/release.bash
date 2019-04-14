@@ -44,7 +44,7 @@ if [[ ! -f "build/${binary}" ]]; then
   echo "${binary} does not exist."
   continue
 fi
-curl -s -S -X POST -u "${GITHUB_USERNAME}:${GITHUB_TOKEN}" "https://uploads.github.com/repos/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/releases/${id}/assets?name=${binary}" --user-agent releasebot -H "Accept: application/vnd.github.v3.raw+json" -H "Content-Type: application/octet-stream" -H "Content-Encoding: utf8" --data-binary "@build/${binary}" > upload.json
+curl -s -S -X POST -u "${GITHUB_USERNAME}:${GITHUB_TOKEN}" "https://uploads.github.com/repos/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/releases/${id}/assets?name=${binary}_${CIRCLE_TAG}_linux_amd64" --user-agent releasebot -H "Accept: application/vnd.github.v3.raw+json" -H "Content-Type: application/octet-stream" -H "Content-Encoding: utf8" --data-binary "@build/${binary}" > upload.json
 ERR=$?
 if [[ $ERR -ne 0 ]]; then
   echo "ERROR: curl error, exitcode $ERR."
