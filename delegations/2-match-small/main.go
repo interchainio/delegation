@@ -67,7 +67,7 @@ func main() {
 
 	// determine how much to delegate to each validator
 	// and collect it as a MsgDelegate
-	N := len(eligibleVals)
+	//N := len(eligibleVals)
 	atoms := float64(icfAtoms)
 	var msgs []sdk.Msg
 	fmt.Println("RANK, ADDRESS, NAME, STAKED, SELF-DELEGATION / GOS-WINNINGS, COMMISSION/MAX-COMMISSION, MAX-COMMISSION-CHANGE - TO-DELEGATE")
@@ -120,7 +120,7 @@ func main() {
 	}
 
 	// split it up
-	N = 7
+	N := 7
 	i := 0
 	for len(msgs) > 0 {
 		n := N
