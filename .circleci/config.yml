@@ -1,0 +1,89 @@
+version: 2.1
+
+executors:
+  go:
+    working_directory: /go/src/github.com/interchainio/delegation
+    docker:
+      - image: golang
+    environment:
+      GO111MODULE=on
+
+commands:
+  test:
+    steps:
+      - run:
+          name: Test
+          command: |
+            make test
+  lint:
+    steps:
+      - run:
+          name: Lint
+          command: |
+            make lint
+  build:
+    steps:
+      - run:
+          name: Build
+          command: |
+            make build
+  release:
+    steps:
+      - run:
+          name: Release
+          command: |
+            /bin/bash .circleci/release.bash delegation stake-dist
+
+
+jobs:
+  lint:
+    executor: go
+    steps:
+      - checkout
+      - lint
+  test:
+    executor: go
+    steps:
+      - checkout
+      - test
+  build:
+    executor: go
+    steps:
+      - checkout
+      - build
+      - persist_to_workspace:
+          root: build
+          paths:
+            - "*"
+  release:
+    executor: go
+    steps:
+      - checkout
+      - attach_workspace:
+          at: /go/src/github.com/interchainio/delegation/build
+      - release
+
+workflows:
+  version: 2
+
+  mini_qa:
+    jobs:
+      - lint
+      - test
+      - build
+  release_management:
+    jobs:
+      - build:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v[0-9]+\.[0-9]+\.[0-9]+/
+      - release:
+          requires:
+            - build
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v[0-9]+\.[0-9]+\.[0-9]+/

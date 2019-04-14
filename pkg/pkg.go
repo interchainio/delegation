@@ -149,9 +149,6 @@ func ListToMap(file string) map[string]float64 {
 	for i := 0; i < len(l); i += 2 {
 		addr := l[i].(string)
 		amt := l[i+1].(float64)
-		if _, ok := amounts[addr]; ok {
-			// fmt.Println("Duplicate addr, consolidating", addr)
-		}
 		amounts[addr] += amt
 	}
 	return amounts
