@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/interchainio/delegation/tree/master.svg?style=svg)](https://circleci.com/gh/interchainio/delegation/tree/master)
+
 # ICF ATOM Delegation
 
 This repository summarizes the Interchain Foundation's approach to delegating
