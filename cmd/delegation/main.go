@@ -20,7 +20,7 @@ import (
 var (
 	cdc = gaia.MakeCodec()
 
-	fullNodeUrl string
+	fullNodeURL string
 	gosJSON     string
 	outputFile  string
 
@@ -49,7 +49,7 @@ func main() {
 
 func getDelegation(cmd *cobra.Command, args []string) {
 
-	node := tmclient.NewHTTP(fullNodeUrl, "/websocket")
+	node := tmclient.NewHTTP(fullNodeURL, "/websocket")
 
 	if len(args) < 1 {
 		fmt.Println("Please specify total amount of atoms to delegate")
