@@ -148,7 +148,7 @@ func getDelegation(cmd *cobra.Command, args []string) {
 }
 
 func getGoSEligibleVals(maxStaked float64, gosMap map[string]float64, validators []stakingtypes.Validator) ([]stakingtypes.Validator, []stakingtypes.Validator) {
-	node := tmclient.NewHTTP(fullNodeUrl, "/websocket")
+	node := tmclient.NewHTTP(fullNodeURL, "/websocket")
 
 	var gosVals []staking.Validator
 	for _, v := range validators {
