@@ -29,7 +29,7 @@ var (
 )
 
 func init() {
-	RootCmd.PersistentFlags().StringVarP(&fullNodeUrl, "url", "", "localhost:26657", "URL of synced full-node to use.")
+	RootCmd.PersistentFlags().StringVarP(&fullNodeURL, "url", "", "localhost:26657", "URL of synced full-node to use.")
 	RootCmd.PersistentFlags().StringVarP(&gosJSON, "gos-json", "", "data/gos.json", "source of json file")
 	RootCmd.PersistentFlags().StringVarP(&outputFile, "output", "", "unsigned-delegations.json", "location to output json file")
 }
