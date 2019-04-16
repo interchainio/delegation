@@ -13,26 +13,44 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/interchainio/delegation/pkg"
 	tmclient "github.com/tendermint/tendermint/rpc/client"
+
+	"github.com/spf13/cobra"
 )
 
 var (
 	cdc = gaia.MakeCodec()
 
-	// expects a locally running node
-	node = tmclient.NewHTTP("localhost:26657", "/websocket")
-
-	// expects the gos.json file to be here
-	gosJSON = "data/gos.json"
-
-	// output unsigned delegation tx
-	outputFile = "unsigned-delegations.json"
+	fullNodeURL string
+	gosJSON     string
+	outputFile  string
 
 	// gas per msg included in the tx
 	gasPerMsg = 200000
 )
 
+func init() {
+	RootCmd.PersistentFlags().StringVarP(&fullNodeURL, "url", "", "localhost:26657", "URL of synced full-node to use.")
+	RootCmd.PersistentFlags().StringVarP(&gosJSON, "gos-json", "", "data/gos.json", "source of json file")
+	RootCmd.PersistentFlags().StringVarP(&outputFile, "output", "", "unsigned-delegations.json", "location to output json file")
+}
+
+var RootCmd = &cobra.Command{
+	Use:   "delegation",
+	Short: "A tool for generating delegation transactions according to various strategies",
+	Long:  "A tool for generating delegation transactions according to various strategies",
+	Run:   getDelegation,
+}
+
 func main() {
-	args := os.Args[1:]
+	if err := RootCmd.Execute(); err != nil {
+		panic(err)
+	}
+}
+
+func getDelegation(cmd *cobra.Command, args []string) {
+
+	node := tmclient.NewHTTP(fullNodeURL, "/websocket")
+
 	if len(args) < 1 {
 		fmt.Println("Please specify total amount of atoms to delegate")
 		os.Exit(1)
@@ -130,6 +148,8 @@ func main() {
 }
 
 func getGoSEligibleVals(maxStaked float64, gosMap map[string]float64, validators []stakingtypes.Validator) ([]stakingtypes.Validator, []stakingtypes.Validator) {
+	node := tmclient.NewHTTP(fullNodeURL, "/websocket")
+
 	var gosVals []staking.Validator
 	for _, v := range validators {
 		vs := sdk.AccAddress(v.OperatorAddress).String()
