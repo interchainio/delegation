@@ -15,7 +15,7 @@ import (
 var (
 	cdc = gaia.MakeCodec()
 
-	fullNodeUrl string
+	fullNodeURL string
 )
 
 func init() {
