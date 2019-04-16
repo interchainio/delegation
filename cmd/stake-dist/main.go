@@ -37,7 +37,7 @@ func main() {
 }
 
 func getDist(cmd *cobra.Command, args []string) {
-	node := tmclient.NewHTTP("localhost:26657", "/websocket")
+	node := tmclient.NewHTTP(fullNodeURL, "/websocket")
 
 	var toAdd float64
 	if len(args) == 1 {
