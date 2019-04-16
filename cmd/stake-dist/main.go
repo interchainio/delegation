@@ -19,7 +19,7 @@ var (
 )
 
 func init() {
-	RootCmd.PersistentFlags().StringVarP(&fullNodeUrl, "url", "", "localhost:26657", "URL of synced full-node to use.")
+	RootCmd.PersistentFlags().StringVarP(&fullNodeURL, "url", "", "localhost:26657", "URL of synced full-node to use.")
 }
 
 var RootCmd = &cobra.Command{
