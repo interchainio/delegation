@@ -38,8 +38,8 @@ they submit proof of ownership of their GoS and fundraiser addresses by performi
 
 The following instances of this came forward:
 
-| Name | GoS Address | Validator Address | Issue
---------------------------------------------------
+| Name | GoS Address | Validator Address | Issue |
+--------|:----------:|:-----------------:|:-----:|
 | 01no.de | cosmos1wf3sncgk7s2ykamrhy4etf09y94rrrg43cdad7 | cosmosvaloper17mggn4znyeyg25wd7498qxl7r2jhgue8u4qjcq | #10
 | stake.zone | cosmos199843dmw5r4nkt6ld00y0wdm0rnnwump4lgs30 | cosmosvaloper1rfpar0qx3umnhu0f6wjp4hvnr3x6u5389e094j | #11
 | coinone | cosmos1pz6yu5vdxfzw85cn6d7rp52me4lu8khx7lpkzd | cosmosvaloper1te8nxpc2myjfrhaty0dnzdhs5ahdh5agzuym9v | #13
