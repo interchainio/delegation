@@ -30,6 +30,7 @@ func init() {
 	RootCmd.PersistentFlags().StringVarP(&flagSenderAddr, "sender", "", icfAddr, "sender address")
 
 	RootCmd.AddCommand(
+		AddressCmd,
 		TransferCmd,
 		DelegateCmd,
 	)
@@ -39,6 +40,13 @@ var RootCmd = &cobra.Command{
 	Use:   "multiverse",
 	Short: "A tool to convert csv files to txs",
 	Long:  "A tool to convert csv files to txs",
+}
+
+var AddressCmd = &cobra.Command{
+	Use:   "addr",
+	Short: "Convert between address formats",
+	Long:  "Convert between address formats",
+	RunE:  cmdAddress,
 }
 
 var TransferCmd = &cobra.Command{
@@ -60,6 +68,38 @@ func main() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+}
+
+func cmdAddress(cmd *cobra.Command, args []string) error {
+	if len(args) < 1 {
+		return fmt.Errorf("Requires an address in any format")
+	}
+
+	addrString := args[0]
+
+	accAddr, err := sdk.AccAddressFromBech32(addrString)
+	if err == nil {
+		printAddrs(accAddr)
+		return nil
+	}
+
+	valAddr, err := sdk.ValAddressFromBech32(addrString)
+	if err == nil {
+		printAddrs(valAddr)
+		return nil
+	}
+
+	hexAddr, err := sdk.AccAddressFromHex(addrString)
+	if err == nil {
+		printAddrs(hexAddr)
+		return nil
+	}
+	return fmt.Errorf("Invalid addr")
+}
+
+func printAddrs(addr []byte) {
+	fmt.Printf("%s\n", sdk.AccAddress(addr))
+	fmt.Printf("%s\n", sdk.ValAddress(addr))
 }
 
 func cmdTransfer(cmd *cobra.Command, args []string) error {
