@@ -135,7 +135,7 @@ func cmdTransfer(cmd *cobra.Command, args []string) error {
 		}
 		txData = append(txData, msg)
 	}
-	pkg.WriteTxs(cdc, txData, gasPerMsg, flagOutputFileName, pkg.NanoSSendMsgsPerTx)
+	pkg.WriteTxs(cdc, txData, gasPerMsg, flagOutputFileName, pkg.MsgsPerTxSend)
 	return nil
 }
 
@@ -158,7 +158,7 @@ func cmdDelegate(cmd *cobra.Command, args []string) error {
 		}
 		txData = append(txData, msg)
 	}
-	pkg.WriteTxs(cdc, txData, gasPerMsg, flagOutputFileName, pkg.NanoSDelegationMsgsPerTx)
+	pkg.WriteTxs(cdc, txData, gasPerMsg, flagOutputFileName, pkg.MsgsPerTxDelegation)
 	return nil
 }
 
@@ -196,7 +196,7 @@ func cmdUndelegate(cmd *cobra.Command, args []string) error {
 		}
 		txData = append(txData, msg)
 	}
-	pkg.WriteTxs(cdc, txData, gasPerMsg, flagOutputFileName, pkg.NanoSDelegationMsgsPerTx)
+	pkg.WriteTxs(cdc, txData, gasPerMsg, flagOutputFileName, pkg.MsgsPerTxDelegation)
 	return nil
 }
 
