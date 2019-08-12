@@ -155,7 +155,8 @@ func ListToMap(file string) map[string]float64 {
 }
 
 // LedgerNanoS can sign about this many msgs at once
-const NanoSMsgsPerTx = 7
+const NanoSDelegationMsgsPerTx = 7
+const NanoSSendMsgsPerTx = 6
 
 // WriteTxs splits the msgs into multiple txs according to msgsPerTx, each named like "{fileNamePrefix}-{index}"
 func WriteTxs(cdc *amino.Codec, msgs []sdk.Msg, gasPerMsg int, fileNamePrefix string, msgsPerTx int) {

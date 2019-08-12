@@ -41,7 +41,20 @@ func (c csvData) ToMsgDelegate(from sdk.AccAddress) (msg stakingtypes.MsgDelegat
 	return stakingtypes.MsgDelegate{
 		DelegatorAddress: from,
 		ValidatorAddress: addr,
-		Value:            sdk.NewInt64Coin("uatom", amount),
+		Amount:           sdk.NewInt64Coin("uatom", amount),
+	}, nil
+}
+
+type undelegateData struct {
+	Amount  sdk.Coin // float64
+	Address sdk.ValAddress
+}
+
+func ToMsgUndelegate(from sdk.AccAddress, val sdk.ValAddress, coin sdk.Coin) (msg stakingtypes.MsgUndelegate, err error) {
+	return stakingtypes.MsgUndelegate{
+		DelegatorAddress: from,
+		ValidatorAddress: val,
+		Amount:           coin,
 	}, nil
 }
 
