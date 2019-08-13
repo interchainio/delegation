@@ -107,7 +107,7 @@ func getDelegation(cmd *cobra.Command, args []string) {
 		msgs = append(msgs, stakingtypes.MsgDelegate{
 			DelegatorAddress: delegatorAddr,
 			ValidatorAddress: v.OperatorAddress,
-			Value:            sdk.NewCoin("uatom", sdk.NewInt(int64(delegate*1000000))),
+			Amount:           sdk.NewCoin("uatom", sdk.NewInt(int64(delegate*1000000))),
 		})
 	}
 
