@@ -65,4 +65,4 @@ from the ICF does not constitute an endorsement.
 This document is for information purposes only with regards to the ICF's
 intention and is not binding in any way.
 
-**Note:** A final delegation was made on August 30 to a validator who submitted an incorrect address in the application, this was corrected and the delegation was completed.
+**Note:** A final delegation was made on August 30 to an applicant who submitted an incorrect address in the application form, this was corrected and the delegation was completed.
