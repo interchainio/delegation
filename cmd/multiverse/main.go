@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	gaia "github.com/cosmos/cosmos-sdk/cmd/gaia/app"
+	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	"github.com/interchainio/delegation/pkg"
@@ -15,7 +15,7 @@ import (
 )
 
 var (
-	cdc = gaia.MakeCodec()
+	cdc = codec.New()
 
 	flagInputFileName  string
 	flagOutputFileName string
@@ -41,6 +41,8 @@ func init() {
 		DelegateCmd,
 		UndelegateCmd,
 	)
+	sdk.RegisterCodec(cdc)
+	codec.RegisterCrypto(cdc)
 }
 
 var RootCmd = &cobra.Command{

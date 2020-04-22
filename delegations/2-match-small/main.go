@@ -7,7 +7,7 @@ import (
 	"sort"
 	"strconv"
 
-	gaia "github.com/cosmos/cosmos-sdk/cmd/gaia/app"
+	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/interchainio/delegation/pkg"
@@ -15,7 +15,7 @@ import (
 )
 
 var (
-	cdc = gaia.MakeCodec()
+	cdc = codec.New()
 
 	// expects a locally running node
 	node = tmclient.NewHTTP("https://rpc.cosmos.network:26657", "/websocket")
@@ -55,6 +55,9 @@ func main() {
 		panic(err)
 	}
 
+	sdk.RegisterCodec(cdc)
+	codec.RegisterCrypto(cdc)
+
 	// get list of validators and gos winners,
 	validators := pkg.GetValidators(cdc, node)
 	gosMap := pkg.ListToMap(gosJSON)
@@ -93,7 +96,7 @@ func main() {
 		msgs = append(msgs, stakingtypes.MsgDelegate{
 			DelegatorAddress: delegatorAddr,
 			ValidatorAddress: v.OperatorAddress,
-			Value:            sdk.NewCoin("uatom", sdk.NewInt(int64(delegate*1000000))),
+			Amount:            sdk.NewCoin("uatom", sdk.NewInt(int64(delegate*1000000))),
 		})
 	}
 

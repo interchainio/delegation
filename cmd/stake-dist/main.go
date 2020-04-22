@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"sort"
 	"strconv"
 
-	gaia "github.com/cosmos/cosmos-sdk/cmd/gaia/app"
+	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/interchainio/delegation/pkg"
 	tmclient "github.com/tendermint/tendermint/rpc/client"
 
@@ -13,13 +14,15 @@ import (
 )
 
 var (
-	cdc = gaia.MakeCodec()
+	cdc = codec.New()
 
 	fullNodeURL string
 )
 
 func init() {
 	RootCmd.PersistentFlags().StringVarP(&fullNodeURL, "url", "", "localhost:26657", "URL of synced full-node to use.")
+	sdk.RegisterCodec(cdc)
+	codec.RegisterCrypto(cdc)
 }
 
 var RootCmd = &cobra.Command{
