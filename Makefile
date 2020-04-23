@@ -11,7 +11,7 @@ test:
 		GO111MODULE=on go test -cover -race ./...
 
 $(GOPATH)/bin/golangci-lint:
-		wget -O- -nv https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $$(go env GOPATH)/bin v1.24.0
+		wget -O- -nv https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -x -d -b $$(go env GOPATH)/bin latest
 
 lint: $(GOPATH)/bin/golangci-lint
 		$(GOPATH)/bin/golangci-lint run ./...
