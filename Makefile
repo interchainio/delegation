@@ -11,7 +11,7 @@ test:
 		GO111MODULE=on go test -cover -race ./...
 
 $(GOPATH)/bin/golangci-lint:
-		GO111MODULE=off go get -u github.com/golangci/golangci-lint/cmd/golangci-lint
+		wget -O- -nv https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $$(go env GOPATH)/bin v1.24.0
 
 lint: $(GOPATH)/bin/golangci-lint
-		GO111MODULE=on $(GOPATH)/bin/golangci-lint run ./...
+		$(GOPATH)/bin/golangci-lint run ./...

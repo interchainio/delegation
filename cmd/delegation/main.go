@@ -7,7 +7,7 @@ import (
 	"sort"
 	"strconv"
 
-	gaia "github.com/cosmos/cosmos-sdk/cmd/gaia/app"
+	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
@@ -18,7 +18,7 @@ import (
 )
 
 var (
-	cdc = gaia.MakeCodec()
+	cdc = codec.New()
 
 	fullNodeURL string
 	gosJSON     string
@@ -32,6 +32,8 @@ func init() {
 	RootCmd.PersistentFlags().StringVarP(&fullNodeURL, "url", "", "localhost:26657", "URL of synced full-node to use.")
 	RootCmd.PersistentFlags().StringVarP(&gosJSON, "gos-json", "", "data/gos.json", "source of json file")
 	RootCmd.PersistentFlags().StringVarP(&outputFile, "output", "", "unsigned-delegations.json", "location to output json file")
+	sdk.RegisterCodec(cdc)
+	codec.RegisterCrypto(cdc)
 }
 
 var RootCmd = &cobra.Command{
